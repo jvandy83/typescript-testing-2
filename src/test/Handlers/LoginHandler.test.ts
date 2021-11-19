@@ -53,7 +53,7 @@ describe('LoginHandler test suite', () => {
 		await loginHandler.handleRequest();
 		expect(responseMock.writeHead).not.toHaveBeenCalled();
 	});
-	test.only('post request with valid login', async () => {
+	test('post request with valid login', async () => {
 		requestMock.method = HTTP_METHODS.POST;
 		getRequestBodyMock.mockReturnValueOnce({
 			username: 'someUser',
@@ -66,5 +66,17 @@ describe('LoginHandler test suite', () => {
 			'Content-Type': 'application/json',
 		});
 		expect(responseMock.write).toBeCalledWith(JSON.stringify(someSessionToken));
+	});
+	test('post request with invalid login', async () => {
+		requestMock.method = HTTP_METHODS.POST;
+		getRequestBodyMock.mockReturnValueOnce({
+			username: 'someUser',
+			password: 'password',
+		});
+		// pass null as token to invalidate request
+		authorizedMock.generateToken.mockReturnValueOnce(null);
+		await loginHandler.handleRequest();
+		expect(responseMock.statusCode).toBe(HTTP_CODES.NOT_fOUND);
+		expect(responseMock.write).toBeCalledWith('wrong username or password');
 	});
 });
