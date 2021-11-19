@@ -14,6 +14,8 @@ describe('LoginHandler test suite', () => {
 	};
 	const responseMock = {
 		writeHead: jest.fn(),
+		write: jest.fn(),
+		statusCode: 0,
 	};
 	const authorizedMock = {
 		generateToken: jest.fn(),
@@ -57,7 +59,12 @@ describe('LoginHandler test suite', () => {
 			username: 'someUser',
 			password: 'password',
 		});
-		authorizedMock.generateToken.mockRejectedValueOnce;
+		authorizedMock.generateToken.mockReturnValueOnce(someSessionToken);
 		await loginHandler.handleRequest();
+		expect(responseMock.statusCode).toBe(HTTP_CODES.CREATED);
+		expect(responseMock.writeHead).toBeCalledWith(HTTP_CODES.CREATED, {
+			'Content-Type': 'application/json',
+		});
+		expect(responseMock.write).toBeCalledWith(JSON.stringify(someSessionToken));
 	});
 });
