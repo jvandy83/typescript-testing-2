@@ -2,7 +2,6 @@ import { SessionTokenDBAccess } from './SessionTokenDBAccess';
 import { TokenGenerator, TokenValidator, SessionToken, TokenRights, TokenState, Account } from '../Models/ServerModels';
 import { UserCredentialsDbAccess } from './UserCredentialsDbAccess';
 
-
 export class Authorizer implements TokenGenerator, TokenValidator {
 
     private sessionTokenDBAccess: SessionTokenDBAccess;
